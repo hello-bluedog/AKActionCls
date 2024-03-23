@@ -1,7 +1,7 @@
 NUM_SHARDS=1
-NUM_GPUS=4
-BATCH_SIZE=256
-BASE_LR=1e-5
+NUM_GPUS=8
+BATCH_SIZE=512
+BASE_LR=2e-5
 work_path="./exp/animal/mamba_t"
 PYTHONPATH=$PYTHONPATH:./slowfast \
 python -X faulthandler tools/run_net.py \
@@ -25,6 +25,6 @@ python -X faulthandler tools/run_net.py \
   TEST.NUM_SPATIAL_CROPS 3 \
   TEST.TEST_BEST False \
   TEST.ADD_SOFTMAX False \
-  TEST.BATCH_SIZE 64 \
+  TEST.BATCH_SIZE 128 \
   RNG_SEED 6666 \
   OUTPUT_DIR "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/mamba_t"

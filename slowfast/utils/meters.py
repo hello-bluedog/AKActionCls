@@ -15,6 +15,7 @@ import slowfast.datasets.ava_helper as ava_helper
 import slowfast.utils.logging as logging
 import slowfast.utils.metrics as metrics
 import slowfast.utils.misc as misc
+import pandas as pd
 from slowfast.utils.ava_eval_helper import (
     evaluate_ava,
     read_csv,
@@ -24,7 +25,7 @@ from slowfast.utils.ava_eval_helper import (
 
 logger = logging.get_logger(__name__)
 
-
+DF_PATH = "/mount/ccai_nas/yunzhu/Animal_Kingdom/action_recognition/annotation/df_action.xlsx"
 def get_ava_mini_groundtruth(full_groundtruth):
     """
     Get the groundtruth annotations corresponding the "subset" of AVA val set.
@@ -280,7 +281,11 @@ class TestMeter(object):
         self.clip_count = torch.zeros((num_videos)).long()
         self.topk_accs = []
         self.stats = {}
-
+        #get head middle tail
+        # df = pd.read_excel(DF_PATH)
+        # self.head_index = df.index[df["segment"] == "head"].tolist()
+        # self.middle_index = df.index[df["segment"] == "middle"].tolist()
+        # self.tail_index = df.index[df["segment"] == "tail"].tolist()
         # Reset metric.
         self.reset()
 
@@ -384,10 +389,22 @@ class TestMeter(object):
 
         self.stats = {"split": "test_final"}
         if self.multi_label:
-            map = get_map(
+            map, head_map, middle_map, tail_map = get_map(
                 self.video_preds.cpu().numpy(), self.video_labels.cpu().numpy()
             )
-            self.stats["map"] = map
+            # head_map = get_map(
+            #     self.video_preds.cpu().numpy()[[i for i in range(x.shape[0]) if i not in list]], self.video_labels.cpu().numpy()[self.head_index]
+            # )
+            # middle_map = get_map(
+            #     self.video_preds.cpu().numpy()[self.middle_index], self.video_labels.cpu().numpy()[self.middle_index]
+            # )
+            # tail_map = get_map(
+            #     self.video_preds.cpu().numpy()[self.tail_index], self.video_labels.cpu().numpy()[self.tail_index]
+            # )
+            self.stats["overall_map"] = map
+            self.stats["head_map"] = head_map
+            self.stats["middle_map"] = middle_map
+            self.stats["tail_map"] = tail_map
         else:
             num_topks_correct = metrics.topks_correct(
                 self.video_preds, self.video_labels, ks
@@ -716,7 +733,6 @@ class ValMeter(object):
         if not self._cfg.DATA.MULTI_LABEL:
             stats["top1_err"] = self.mb_top1_err.get_win_median()
             stats["top5_err"] = self.mb_top5_err.get_win_median()
-            stats["mAP"] = metrics.mAP(np.array(self.all_preds).squeeze(), np.array(self.all_labels).squeeze())
         logging.log_json_stats(stats)
 
     def log_epoch_stats(self, cur_epoch):
@@ -743,10 +759,10 @@ class ValMeter(object):
                 torch.cat(self.all_preds).cpu().numpy(),
                 torch.cat(self.all_labels).cpu().numpy(),
             )
-            stats["map"] = map
-            if self.max_map < map:
-                self.max_map = map
-            if self.max_map == map:
+            stats["map"] = map[0]
+            if self.max_map < map[0]:
+                self.max_map = map[0]
+            if self.max_map == map[0]:
                 flag = True
         else:
             top1_err = self.num_top1_mis / self.num_samples
@@ -776,11 +792,12 @@ def get_map(preds, labels):
         mean_ap (int): final mAP score.
     """
 
-    logger.info("Getting mAP for {} examples".format(preds.shape[0]))
-
-    preds = preds[:, ~(np.all(labels == 0, axis=0))]
-    labels = labels[:, ~(np.all(labels == 0, axis=0))]
-    aps = [0]
+    df = pd.read_excel(DF_PATH)
+    head_index = df.index[df["segment"] == "head"].tolist()
+    middle_index = df.index[df["segment"] == "middle"].tolist()
+    tail_index = df.index[df["segment"] == "tail"].tolist()
+    #preds = preds[:, ~(np.all(labels == 0, axis=0))]
+    #labels = labels[:, ~(np.all(labels == 0, axis=0))]
     try:
         aps = average_precision_score(labels, preds, average=None)
     except ValueError:
@@ -788,9 +805,13 @@ def get_map(preds, labels):
             "Average precision requires a sufficient number of samples \
             in a batch which are missing in this sample."
         )
+    print("aps shape")
 
-    mean_ap = np.mean(aps)
-    return mean_ap
+    mean_ap = np.sum(aps) / (aps != 0).sum()
+    tail_ap = np.sum(aps[tail_index]) / (aps[tail_index] != 0).sum()
+    middle_ap = np.sum(aps[middle_index]) / (aps[middle_index] != 0).sum()
+    head_ap = np.sum(aps[head_index]) / (aps[head_index] != 0).sum()
+    return mean_ap, head_ap, middle_ap, tail_ap
 
 
 class EpochTimer:

@@ -28,7 +28,7 @@ except ImportError:
 
 MODEL_PATH = '/mount/ccai_nas/yunzhu/Animal_Kingdom/model/'
 _MODELS = {
-    "videomamba_t16_in1k": os.path.join(MODEL_PATH, "videomamba_t16_k400_f8_res224.pth"),
+    "videomamba_t16_in1k": os.path.join(MODEL_PATH, "videomamba_t16_in1k_res224.pth"),
     "videomamba_s16_in1k": os.path.join(MODEL_PATH, "videomamba_s16_in1k_res224.pth"),
     "videomamba_m16_in1k": os.path.join(MODEL_PATH, "videomamba_m16_k400_mask_pt_f8_res224.pth"),
 }

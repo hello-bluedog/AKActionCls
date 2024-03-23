@@ -1,5 +1,5 @@
 NUM_SHARDS=1
-NUM_GPUS=2
+NUM_GPUS=4
 BATCH_SIZE=32
 BASE_LR=1e-5
 work_path=./exp/animal/EQLv2
@@ -27,6 +27,6 @@ python tools/run_net.py \
   TEST.TEST_BEST True \
   TEST.ADD_SOFTMAX False \
   TEST.BATCH_SIZE 128 \
-  TEST.CHECKPOINT_FILE_PATH "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/EQLv2/checkpoints/checkpoint_epoch_00090.pyth"
-  RNG_SEED 6666 \
-  OUTPUT_DIR "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/EQLv2/"
+  TEST.CHECKPOINT_FILE_PATH "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/EQLv2/checkpoints/checkpoint_epoch_00065.pyth"
+  OUTPUT_DIR "./rst" \
+  SETTING "EQLv2-b16"

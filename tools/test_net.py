@@ -205,8 +205,7 @@ def test(cfg):
     if writer is not None:
         writer.close()
 
-    
-    file_name = f'{cfg.DATA.NUM_FRAMES}x{cfg.DATA.TEST_CROP_SIZE}x{cfg.TEST.NUM_ENSEMBLE_VIEWS}x{cfg.TEST.NUM_SPATIAL_CROPS}.pkl'
+    file_name = f'{cfg.SETTING}-{cfg.DATA.NUM_FRAMES}x{cfg.DATA.TEST_CROP_SIZE}x{cfg.TEST.NUM_ENSEMBLE_VIEWS}x{cfg.TEST.NUM_SPATIAL_CROPS}.pkl'
     with g_pathmgr.open(os.path.join(
         cfg.OUTPUT_DIR, file_name),
         'wb'

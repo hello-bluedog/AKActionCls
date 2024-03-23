@@ -32,8 +32,9 @@ UNIFORMERV2:
   RETURN_LIST: [20, 21, 22, 23]
   NO_LMHRA: False
   TEMPORAL_DOWNSAMPLE: False
+  DELETE_SPECIAL_HEAD: True
   #PRETRAIN: 'k710/k710_uniformerv2_l14_8x224.pyth'
-  #PRETRAIN: "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/pretrain_l14/best.pyth"
+  PRETRAIN: "/mount/ccai_nas/yunzhu/Animal_Kingdom/model/k400_k710_uniformerv2_l14_8x224.pyth"
 AUG:
   NUM_SAMPLE: 1
   ENABLE: True
@@ -56,7 +57,7 @@ SOLVER:
   WARMUP_START_LR: 1e-7
   WARMUP_EPOCHS: 0.
   LR_POLICY: cosine
-  MAX_EPOCH: 50
+  MAX_EPOCH: 10
   MOMENTUM: 0.9
   WEIGHT_DECAY: 0.05
   OPTIMIZING_METHOD: adamw

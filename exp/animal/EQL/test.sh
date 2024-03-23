@@ -5,7 +5,7 @@ BASE_LR=1e-5
 work_path=./exp/animal/EQL
 PYTHONPATH=$PYTHONPATH:./slowfast \
 python tools/run_net.py \
-  --init_method tcp://localhost:10125 \
+  --init_method tcp://localhost:10124 \
   --cfg $work_path/config.yaml \
   --num_shards $NUM_SHARDS \
   DATA.PATH_TO_DATA_DIR  /mount/ccai_nas/yunzhu/Animal_Kingdom/action_recognition/annotation/ \
@@ -27,6 +27,7 @@ python tools/run_net.py \
   TEST.TEST_BEST True \
   TEST.ADD_SOFTMAX False \
   TEST.BATCH_SIZE 128 \
-  #TEST.CHECKPOINT_FILE_PATH "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/EQL/checkpoints/checkpoint_epoch_00100.pyth"
+  TEST.CHECKPOINT_FILE_PATH "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/EQL/checkpoints/checkpoint_epoch_00070.pyth"
   RNG_SEED 6666 \
-  OUTPUT_DIR "/mount/ccai_nas/yunzhu/Animal_Kingdom/output/EQL/"
+  OUTPUT_DIR "./rst" \
+  SETTING "EQL-b16"

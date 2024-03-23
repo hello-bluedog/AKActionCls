@@ -821,6 +821,7 @@ _C.SHARD_ID = 0
 
 # Output basedir.
 _C.OUTPUT_DIR = "./tmp"
+_C.SETTING = "bce"
 
 # Note that non-determinism may still be present due to non-deterministic
 # operator implementations in GPU operator libraries.
